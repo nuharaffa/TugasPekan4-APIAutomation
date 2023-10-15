@@ -1,0 +1,24 @@
+{
+  "name": "tugaspekan4-apiautomation",
+  "version": "1.0.0",
+  "description": "TugasPekan4",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nuharaffa/TugasPekan4-APIAutomation.git"
+  },
+  "author": "Raffa",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nuharaffa/TugasPekan4-APIAutomation/issues"
+  },
+  "homepage": "https://github.com/nuharaffa/TugasPekan4-APIAutomation#readme",
+  "dependencies": {
+    "chai": "^4.3.10",
+    "jsonschema": "^1.4.1",
+    "supertest": "^6.3.3"
+  }
+}
