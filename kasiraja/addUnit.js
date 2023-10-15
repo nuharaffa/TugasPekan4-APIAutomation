@@ -1,35 +1,41 @@
-const request = require("supertest")
-const { expect }= require("chai")
+const request = require("supertest");
+const { expect } = require("chai");
+const getAuthToken = require("./authHelper");
 
-describe("login", () =>{
-    it("Response status is 201", async () =>{
-        const response = await request("https://kasir-api.belajarqa.com")
-        .post("/authentications")
-        .send({
-                "email": "sample@ex.com",
-                "password": "123adsfadf@"
-        })
-        // .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxNjgwYmFhLWY2NDYtNDA0MC1iMTEwLTVlNzBhNmZlYzM5NCIsImNvbXBhbnlJZCI6IjY2ZDllMTQ3LTk3N2ItNDEzNS04YWVjLWE4NjI0MjkyNWExNSIsImlhdCI6MTY5NzM1MjYwNn0.pYIIu6JuysNHkmkr8XecS6C8FIfwzLlEPtxxJKBx7Z0')
-    console.log(JSON.stringify(await response))
-    expect(await response.status).equal(201)
+describe("addUnit", () => {
+  it("Response status is 201", async function () {
+    this.timeout(7000); // Set a longer timeout for the entire test case (if needed)
 
-    })
-})
+    const authToken = await getAuthToken();
+    const responseAddUnitPromise = request("https://kasir-api.belajarqa.com")
+      .post("/units")
+      .send({
+        name: "kg-2",
+        description: "weight measurement"
+      })
+      .set('Authorization', `Bearer ${authToken}`);
 
+    const timeoutPromise = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        reject(new Error('Timeout exceeded for responseAddUnit.status'));
+      }, 5000);
+    });
 
-// describe("Add Unit", () =>{
-//     it("Response status is 201", async () => {
-//         const response = await request("https://kasir-api.belajarqa.com")
-//             .post("/unit")
-//             .send({
-//                 "name": "kg-1",
-//                 "description": "weight measurement"
-//              })
-//              .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxNjgwYmFhLWY2NDYtNDA0MC1iMTEwLTVlNzBhNmZlYzM5NCIsImNvbXBhbnlJZCI6IjY2ZDllMTQ3LTk3N2ItNDEzNS04YWVjLWE4NjI0MjkyNWExNSIsImlhdCI6MTY5NzM1MjYwNn0.pYIIu6JuysNHkmkr8XecS6C8FIfwzLlEPtxxJKBx7Z0')
-//         console.log(JSON.stringify(await response))
-//         expect(await response.status).equal(201)
+    try {
+      const responseAddUnit = await Promise.race([responseAddUnitPromise, timeoutPromise]);
 
+      console.log(JSON.stringify(responseAddUnit));
+      expect(responseAddUnit.status).to.equal(201);
 
-//     })
+      const unitId = responseAddUnit.body.data.unitId;
+      console.log(unitId);
 
-// })
+      // Return a Promise that resolves when the test is done
+      return Promise.resolve();
+    } catch (error) {
+      // Handle the timeout error or other issues here
+      console.error(error);
+      throw error;
+    }
+  });
+});
